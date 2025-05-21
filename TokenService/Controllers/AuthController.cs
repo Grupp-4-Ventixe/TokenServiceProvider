@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using TokenService.Services;
@@ -25,6 +26,10 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("token")]
+    [Produces("application/json")]
+    [SwaggerResponse(200, "JWT-token genererades korrekt")]
+    [SwaggerResponse(400, "Ogiltig request – userId eller role saknas")]
+    [SwaggerOperation (Summary = "Genererar en JWT-token baserat på användarens ID och roll.")] 
     public IActionResult GenerateToken([FromBody] TokenRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.UserId) || string.IsNullOrWhiteSpace(request.Role))
@@ -44,6 +49,11 @@ public class AuthController : ControllerBase
    4. Returnerar 200 OK om token är giltig, annars 401 Unauthorized */
 
     [HttpGet("validate")]
+    [Produces("application/json")]
+    [SwaggerResponse(200, "Token är giltig")]
+    [SwaggerResponse(401, "Token saknas, är ogiltig eller har gått ut")]
+    [SwaggerResponse(500, "JWT-konfiguration saknas i servern")]
+    [SwaggerOperation(Summary = "Validerar en JWT-token från Authorization-header.")]
     public IActionResult ValidateToken()
     {
         var authHeader = Request.Headers["Authorization"].ToString();
