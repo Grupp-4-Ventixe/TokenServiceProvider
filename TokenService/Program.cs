@@ -2,19 +2,22 @@ using TokenService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+// Services
 builder.Services.AddControllers();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
+// Middleware
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+
+// Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
 app.Run();
