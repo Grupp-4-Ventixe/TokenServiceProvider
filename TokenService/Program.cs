@@ -55,7 +55,11 @@ app.MapControllers();
 
 // Swagger
 app.UseSwagger();
-app.UseSwaggerUI();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "TokenService API v1");
+    c.RoutePrefix = string.Empty;
+});
 
 
 app.Run();
