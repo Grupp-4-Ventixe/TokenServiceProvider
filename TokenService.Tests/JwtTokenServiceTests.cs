@@ -28,4 +28,27 @@ public class JwtTokenServiceTests
         // Assert
         Assert.False(string.IsNullOrWhiteSpace(token));
     }
+
+    [Fact]
+    public void GenerateToken_ShouldThrowException_WhenKeyisMissing()
+    {
+        // Arrange
+        var configData = new Dictionary<string, string?>()
+        {
+            { "Jwt:Issuer", "test-issuer" },
+            { "Jwt:Audience", "test-audience" }
+        };
+
+        var configuration = new ConfigurationBuilder()
+        .AddInMemoryCollection(configData)
+        .Build();
+
+        var tokenService = new JwtTokenService(configuration);
+
+        // Act & Assert
+        Assert.Throws<InvalidOperationException>(() =>
+        {
+            tokenService.GenerateToken("testuser", "admin");
+        });
+    }
 }
