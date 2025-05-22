@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TokenService.Services;
 
 namespace TokenService.Tests;
@@ -50,5 +52,38 @@ public class JwtTokenServiceTests
         {
             tokenService.GenerateToken("testuser", "admin");
         });
+    }
+
+    [Fact]
+    public void GenerateToken_ShouldContainExpectedClaims()
+    {
+        // Arrange
+        var configData = new Dictionary<string, string?>()
+        {
+            { "Jwt:Key", "test_secret_key_1234567890_long_enough!" },
+            { "Jwt:Issuer", "test-issuer" },
+            { "Jwt:Audience", "test-audience" }
+        };
+
+        var configuration = new ConfigurationBuilder()
+        .AddInMemoryCollection(configData)
+        .Build();
+
+        var tokenService = new JwtTokenService(configuration);
+
+        var userId = "testuser";
+        var role = "admin";
+
+        // Act
+        var token = tokenService.GenerateToken(userId, role);
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwtToken = handler.ReadJwtToken(token);
+
+        // Assert
+        Assert.Contains(jwtToken.Claims, c => c.Type == "sub" && c.Value == userId);
+        Assert.Contains(jwtToken.Claims, c => c.Type == ClaimTypes.Role && c.Value == role);
+        Assert.Equal("test-issuer", jwtToken.Issuer);
+        Assert.Equal("test-audience", jwtToken.Audiences.First());
     }
 }
