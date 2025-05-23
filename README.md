@@ -112,8 +112,11 @@ Täckta scenarier:
 
 ## Publicering
 
-TokenService är ännu inte publicerad till Azure.  
-Kommer att göras tillgänglig under molntjänst vid behov.
+TokenService är publicerad på Azure:
+
+🔗 [https://tokenservice-hghjfwgwf9cubxdp.swedencentral-01.azurewebsites.net](https://tokenservice-hghjfwgwf9cubxdp.swedencentral-01.azurewebsites.net)
+
+Tjänsten innehåller Swagger UI där du kan testa `/auth/token` och `/auth/validate`.
 
 
 ---
